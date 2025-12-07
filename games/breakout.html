@@ -1,0 +1,105 @@
+<!-- games/breakout.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Breakout</title>
+<style>
+  body { margin:0; background:#0d0d0f; color:#e6e6eb; font-family:system-ui; display:grid; place-items:center; height:100vh; }
+  canvas { background:#121218; border:1px solid #2a2a31; border-radius:8px; image-rendering: crisp-edges; }
+</style>
+</head>
+<body>
+<canvas id="game" width="640" height="400"></canvas>
+<script>
+const c = document.getElementById('game');
+const ctx = c.getContext('2d');
+
+const paddle = { w: 96, h: 12, x: (c.width-96)/2, y: c.height-24, speed: 6 };
+const ball = { x: c.width/2, y: c.height/2, r: 6, vx: 3, vy: -3 };
+let right = false, left = false;
+
+const rows = 5, cols = 10, bw = 56, bh = 18, gap = 6, offsetX = 20, offsetY = 40;
+let bricks = [];
+
+function resetBricks() {
+  bricks = [];
+  for (let r=0;r<rows;r++) {
+    for (let col=0;col<cols;col++) {
+      bricks.push({ x: offsetX + col*(bw+gap), y: offsetY + r*(bh+gap), w: bw, h: bh, alive: true });
+    }
+  }
+}
+resetBricks();
+
+addEventListener('keydown', e => { if (e.key==='ArrowRight') right = true; if (e.key==='ArrowLeft') left = true; });
+addEventListener('keyup', e => { if (e.key==='ArrowRight') right = false; if (e.key==='ArrowLeft') left = false; });
+
+function step() {
+  if (right) paddle.x += paddle.speed;
+  if (left) paddle.x -= paddle.speed;
+  paddle.x = Math.max(0, Math.min(c.width - paddle.w, paddle.x));
+
+  ball.x += ball.vx; ball.y += ball.vy;
+
+  // walls
+  if (ball.x - ball.r < 0 || ball.x + ball.r > c.width) ball.vx *= -1;
+  if (ball.y - ball.r < 0) ball.vy *= -1;
+
+  // paddle
+  if (ball.y + ball.r >= paddle.y &&
+      ball.x >= paddle.x && ball.x <= paddle.x + paddle.w &&
+      ball.vy > 0) {
+    ball.vy *= -1;
+    const hit = (ball.x - paddle.x) / paddle.w - 0.5;
+    ball.vx = 3 + hit * 4; // add some angle
+  }
+
+  // bricks
+  for (const b of bricks) {
+    if (!b.alive) continue;
+    if (ball.x > b.x && ball.x < b.x + b.w && ball.y - ball.r < b.y + b.h && ball.y + ball.r > b.y) {
+      b.alive = false;
+      ball.vy *= -1;
+      break;
+    }
+  }
+
+  // lose
+  if (ball.y - ball.r > c.height) {
+    ball.x = c.width/2; ball.y = c.height/2; ball.vx = 3; ball.vy = -3;
+    resetBricks();
+  }
+
+  // win -> next level
+  if (bricks.every(b => !b.alive)) {
+    resetBricks();
+    ball.vx *= 1.1; ball.vy *= 1.1;
+  }
+}
+
+function draw() {
+  ctx.fillStyle = '#121218'; ctx.fillRect(0,0,c.width,c.height);
+
+  // bricks
+  for (const b of bricks) {
+    if (!b.alive) continue;
+    ctx.fillStyle = '#2d2df5';
+    ctx.fillRect(b.x, b.y, b.w, b.h);
+  }
+
+  // paddle
+  ctx.fillStyle = '#e6e6eb';
+  ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+
+  // ball
+  ctx.fillStyle = '#ff3b3b';
+  ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2); ctx.fill();
+}
+
+function loop() { step(); draw(); requestAnimationFrame(loop); }
+loop();
+</script>
+</body>
+</html>
