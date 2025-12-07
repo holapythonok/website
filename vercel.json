@@ -1,9 +1,8 @@
-// vercel.json
 {
   "version": 2,
-  "routes": [
-    { "src": "/games/(.*)", "dest": "/games/$1" },
-    { "src": "/assets/(.*)", "dest": "/assets/$1" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  }
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "games/**/*.html", "use": "@vercel/static" },
+    { "src": "assets/**/*", "use": "@vercel/static" }
+  ]
 }
