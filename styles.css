@@ -1,0 +1,74 @@
+/* styles.css — Old School Arcade Theme */
+
+/* Reset basics */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #000; /* black backdrop */
+  color: #0f0; /* neon green text */
+  font-family: "Courier New", monospace; /* retro terminal font */
+  line-height: 1.4;
+}
+
+/* Headings look like glowing arcade titles */
+h1, h2, h3 {
+  color: #ff0; /* bright yellow */
+  text-shadow: 2px 2px #f00; /* red glow */
+  margin-bottom: 12px;
+}
+
+/* Links styled like old-school buttons */
+a {
+  color: #0ff; /* cyan */
+  text-decoration: none;
+  font-weight: bold;
+  border: 2px solid #0ff;
+  padding: 4px 8px;
+  display: inline-block;
+  transition: background 0.2s, color 0.2s;
+}
+
+a:hover {
+  background: #0ff;
+  color: #000;
+}
+
+/* Card containers with chunky borders */
+.card {
+  border: 4px double #fff;
+  padding: 12px;
+  margin: 12px;
+  background: #111;
+}
+
+/* Grid layout for game list */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+/* Header bar like an old marquee */
+header {
+  background: #222;
+  border-bottom: 4px solid #ff0;
+  padding: 16px;
+  text-align: center;
+}
+
+/* Footer with blinking effect */
+footer {
+  text-align: center;
+  padding: 12px;
+  color: #888;
+  font-size: 0.9rem;
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
