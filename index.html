@@ -1,0 +1,46 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Light Arcade</title>
+  <link rel="icon" href="/assets/favicon.ico">
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, sans-serif; margin: 0; background:#0d0d0f; color:#e6e6eb; }
+    header { padding: 32px; background: linear-gradient(90deg,#3a2fff,#7a2fff); }
+    h1 { margin: 0; font-weight: 800; letter-spacing: 0.5px; }
+    main { max-width: 800px; margin: 24px auto; padding: 0 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap: 16px; }
+    .card { padding: 16px; border-radius: 12px; background: #16161a; border: 1px solid #2a2a31; }
+    .card h3 { margin: 0 0 8px; font-size: 1rem; }
+    .card p { margin: 0 0 12px; color: #b0b0bb; font-size: 0.9rem; }
+    .card a { display:inline-block; padding:8px 12px; border-radius:8px; background:#2d2df5; color:#fff; text-decoration:none; font-weight:600; }
+    footer { text-align:center; padding: 24px; color:#8b8b96; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Light Arcade</h1>
+    <p>Pure HTML + JS mini games. No builds, no trackers.</p>
+  </header>
+  <main>
+    <section class="grid">
+      <article class="card">
+        <h3>Snake</h3>
+        <p>Arrow keys to move. Eat apples, avoid yourself.</p>
+        <a href="/games/snake.html">Play Snake</a>
+      </article>
+      <article class="card">
+        <h3>Breakout</h3>
+        <p>Paddle the ball to clear the bricks.</p>
+        <a href="/games/breakout.html">Play Breakout</a>
+      </article>
+    </section>
+  </main>
+  <footer>
+    <small>© Light Arcade — static, fast, friendly.</small>
+  </footer>
+</body>
+</html>
