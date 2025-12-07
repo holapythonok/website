@@ -1,0 +1,103 @@
+<!-- games/snake.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Snake</title>
+<style>
+  body { margin:0; background:#0d0d0f; color:#e6e6eb; font-family:system-ui; display:grid; place-items:center; height:100vh; }
+  canvas { background:#121218; border:1px solid #2a2a31; border-radius:8px; image-rendering: pixelated; }
+  .hud { position:fixed; top:12px; left:12px; color:#b0b0bb; }
+</style>
+</head>
+<body>
+<div class="hud">Score: <span id="score">0</span></div>
+<canvas id="game" width="480" height="480"></canvas>
+<script>
+const c = document.getElementById('game');
+const ctx = c.getContext('2d');
+const size = 24; // grid cell size
+const cols = c.width / size;
+const rows = c.height / size;
+
+let snake = [{x: 10, y: 10}];
+let dir = {x: 1, y: 0};
+let apple = spawnApple();
+let score = 0;
+let dead = false;
+
+function spawnApple() {
+  let a;
+  do {
+    a = { x: Math.floor(Math.random()*cols), y: Math.floor(Math.random()*rows) };
+  } while (snake.some(s => s.x === a.x && s.y === a.y));
+  return a;
+}
+
+addEventListener('keydown', e => {
+  const map = { ArrowUp:{x:0,y:-1}, ArrowDown:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, ArrowRight:{x:1,y:0} };
+  if (map[e.key]) {
+    const nd = map[e.key];
+    // prevent reversing
+    if (snake.length === 1 || (nd.x !== -dir.x || nd.y !== -dir.y)) dir = nd;
+  }
+});
+
+function step() {
+  if (dead) return;
+  const head = { x: (snake[0].x + dir.x), y: (snake[0].y + dir.y) };
+  // wrap around edges
+  head.x = (head.x + cols) % cols;
+  head.y = (head.y + rows) % rows;
+
+  // collision with body
+  if (snake.some(s => s.x === head.x && s.y === head.y)) {
+    dead = true;
+    return;
+  }
+
+  snake.unshift(head);
+  if (head.x === apple.x && head.y === apple.y) {
+    score++;
+    document.getElementById('score').textContent = score;
+    apple = spawnApple();
+  } else {
+    snake.pop();
+  }
+}
+
+function draw() {
+  ctx.fillStyle = '#121218';
+  ctx.fillRect(0,0,c.width,c.height);
+
+  // apple
+  ctx.fillStyle = '#ff3b3b';
+  ctx.fillRect(apple.x*size, apple.y*size, size, size);
+
+  // snake
+  for (let i=0;i<snake.length;i++) {
+    ctx.fillStyle = i===0 ? '#2d2df5' : '#5a5af5';
+    ctx.fillRect(snake[i].x*size, snake[i].y*size, size, size);
+  }
+
+  if (dead) {
+    ctx.fillStyle = '#e6e6eb';
+    ctx.font = 'bold 24px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('Game Over — Press R to restart', c.width/2, c.height/2);
+  }
+}
+
+addEventListener('keydown', e => {
+  if (dead && e.key.toLowerCase() === 'r') {
+    snake = [{x:10,y:10}]; dir = {x:1,y:0}; apple = spawnApple(); score = 0; dead = false;
+    document.getElementById('score').textContent = score;
+  }
+});
+
+function loop() { step(); draw(); }
+setInterval(loop, 90);
+</script>
+</body>
+</html>
